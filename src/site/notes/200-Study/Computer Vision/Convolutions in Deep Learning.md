@@ -9,7 +9,7 @@
 
 这篇文章总结了深度学习中常用的几种卷积，并给出详细解释。除了这篇文章，还有其他人关于这个主题的几篇好文章。请查看它们（列在参考资料中）。
 
-## 卷积和交叉相关
+## 1 卷积和交叉相关
 
 卷积是一种广泛用于信号处理、图像处理和其他工程/科学领域的技术。在深度学习中，一种模型架构，卷积神经网络（CNN）就是以这种技术命名的。然而，深度学习中的卷积本质上是信号/图像处理中的互相关（Crosscorrelation）。这两种操作之间存在细微的区别。
 
@@ -30,13 +30,13 @@ $$
 
 在深度学习中，卷积中的滤波器没有进行反转，主要进行元素乘法和加法。严格来说，这是交叉相关。但在深度学习中，人们习惯性地将其称为卷积。这没有问题，因为滤波器的权重是在训练过程中学到的。如果上例中的反转函数 $g$ 是原函数，那么训练后学习到的权重矩阵会进行反转。因此，在训练之前，无需像真正的卷积那样先反转滤波器。
 
-## 深度学习中的卷积
+## 2 深度学习中的卷积
 
 卷积的目的是为了从输入中提取有用的特征。在图像处理中，可以选择许多不同的滤波器进行卷积。每种滤波器都有助于从输入图像中提取不同的方面或特征，例如水平特征、垂直特征、对角线边缘特征等。同样地，在卷积神经网络中，*通过使用滤波器卷积提取不同的特征，这些滤波器的权重是在训练过程中自动学习的*。然后将所有提取出来的特征“组合”起来以做出决策。
 
 卷积有几个==优点==，如**权重共享和平移不变**。卷积还能**考虑像素的空间关系**。这对许多计算机视觉任务非常有帮助，因为这些任务通常涉及识别某些组件与其他组件具有特定空间关系的物体（例如，狗的身体通常与头部、四条腿和尾巴相连）。
 
-### 单通道卷积
+### 2.1 单通道卷积
 
 ![Convolution for a single channel](https://image-1256466424.cos.accelerate.myqcloud.com/1_hKkrLnzObzGtn7oeV4QRmA_2024_02_22_44.gif)
 
@@ -45,7 +45,7 @@ $$
 > [!attention]
 > 在这个例子中，$\text{stride} = 1$，$\text{pading} = 0$，这些概念将在下文的算术部分进行介绍。
 
-### 多通道卷积
+### 2.2 多通道卷积
 
 在许多应用中，我们处理的图像都具有多个通道。一个典型的例子是 RGB 图像。如下图所示，每个 RGB 通道表征了原始图像的不同方面。
 
@@ -73,7 +73,7 @@ $$
 
 ![Standard 2D convolution](https://image-1256466424.cos.accelerate.myqcloud.com/202402172332824_2024_02_23_27.png)
 
-## 3D 卷积
+## 3 3D 卷积
 
 在上一节的最后一个图中，我们看到我们实际上是在对 3D 数据执行卷积。但通常情况下，我们仍然将该操作称为深度学习中的二维卷积。*它是对 3D 数据的 2D 卷积。过滤器深度与输入层深度相同。3D 滤波器仅在 2 个方向（图像的高度和宽度）上移动。这种操作的输出是 2D 图像（只有 1 个通道）。*
 
@@ -83,7 +83,7 @@ $$
 
 二维卷积编码二维空间中物体的空间关系，三维卷积可以描述三维空间中物体的空间关系。这种三维关系在某些应用中非常重要，例如在生物医学成像（如 CT 和 MRI）的三维分割/重建中，血管等物体在三维空间中蜿蜒曲折。
 
-## 1x1 卷积
+## 4 1x1 卷积
 
 在上一节的 3D 卷积中谈到了深度方面的操作，现在我们来谈谈另一个有趣的操作，$1 \times 1$ 卷积。
 
@@ -115,7 +115,7 @@ Google Inception 论文中描述了上述优点：
 
 ![Yann LeCun](https://image-1256466424.cos.accelerate.myqcloud.com/202402180029086_2024_02_00_14.png)
 
-## 卷积算术
+## 5 卷积算术
 
 我们现在知道了如何理解卷积的深度。接下来，我们将讨论如何处理其他两个方向（高度和宽度）的卷积，以及重要的卷积运算。
 
@@ -136,7 +136,7 @@ $$
 o = \lfloor \frac{i + 2p - s}{k} \rfloor + 1
 $$
 
-## 转置卷积 (反卷积)
+## 6 转置卷积 (反卷积)
 
 在许多应用和许多网络架构中，我们经常需要进行与正常卷积相反方向的变换，即进行向上采样，例如生成高分辨率图像、将低维特征图映射到高维空间。在后面的例子中，语义分割首先在编码器中提取特征图，然后在解码器中恢复原始图像大小，这样就能对原始图像中的每个像素进行分类。
 
@@ -168,7 +168,7 @@ $$
 
 转置卷积的一般运算可以阅读 [[1603.07285] A guide to convolution arithmetic for deep learning]( https://arxiv.org/abs/1603.07285 ) 获取更多内容。
 
-### 棋盘伪影 (Checkerboard artifacts)
+### 6.1 棋盘伪影 (Checkerboard artifacts)
 
 在使用转置卷积时，人们会发现一种令人不快的现象，那就是所谓的棋盘伪影。
 
@@ -198,7 +198,7 @@ $$
 
 [Deconvolution and Checkerboard Artifacts](https://distill.pub/2016/deconv-checkerboard/) 进一步提出了一种更好的上采样方法：先调整图像大小（使用近邻插值或双线性插值），然后再做卷积层。通过这种方法，作者避免了棋盘效果。您不妨在自己的应用中尝试一下。
 
-## 空洞/扩张/膨胀卷积 （Dilated/Atrous Convolution）
+## 7 空洞/扩张/膨胀卷积 （Dilated/Atrous Convolution）
 
 扩张卷积也称空洞/膨胀卷积，其在论文 [[1412.7062] Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs]( https://arxiv.org/abs/1412.7062 ) 和论文 [[1511.07122] Multi-Scale Context Aggregation by Dilated Convolutions]( https://arxiv.org/abs/1511.07122 ) 中进行了介绍。
 
@@ -224,11 +224,11 @@ $$
 
 在图像中，$3 \times 3$ 红点表示卷积后的输出图像为 $3 \times 3$ 像素。虽然三种扩张卷积的输出维度相同，但模型观察到的感受野却大相径庭。当 $l =1$ 时，感受野为 $3 \times 3$。$l =2$ 时为 $7 \times 7$。有趣的是，与这些操作相关的参数数量基本相同，但能获得一个更大的感受野，而不需要增加额外的成本。正因为如此，**扩张卷积被用来在不增加内核大小的情况下廉价地增加输出单元的感受野，这在多个扩张卷积相继叠加时尤为有效。**
 
-## 可分离卷积 （空间可分离卷积，深度卷积）
+## 8 可分离卷积 （空间可分离卷积，深度卷积）
 
 可分离卷积用于某些神经网络架构，如 MobileNet（链接）。我们可以在空间上（空间可分离卷积）或深度上（深度可分离卷积）进行可分离卷积。
 
-### 空间可分离卷积 (Spatially Separable Convolution)
+### 8.1 空间可分离卷积 (Spatially Separable Convolution)
 
 空间可分离卷积对图像的二维空间维度（即高度和宽度）进行操作。从概念上讲，空间可分离卷积将卷积分解为两个独立的操作。例如，将 $3 \times 3$ 的 Sobel 内核分解为 $3 \times 1$ 和 $1 \times 3$ 内核。
 
@@ -253,7 +253,7 @@ $$
 
 虽然空间可分离卷积节省了成本，但在深度学习中却很少使用。其中一个主要原因是，并非所有的内核都能分成两个更小的内核。如果我们用空间可分离卷积代替所有传统卷积，就会限制我们在训练过程中搜索所有可能的核。训练结果可能达不到最优。
 
-### 深度可分离卷积 (Depthwise Separable Convolution)
+### 8.2 深度可分离卷积 (Depthwise Separable Convolution)
 
 现在，让我们来看看深度可分离卷积，它在深度学习中更为常用（例如在 MobileNet 和 Xception 中）。深度可分离卷积包括两个步骤：**深度卷积**和 1x1 卷积。
 
@@ -306,7 +306,7 @@ $$
 
 使用深度可分离卷积有什么缺点吗？当然有。深度可分卷积减少了卷积中的参数数量。因此，对于一个小模型来说，如果用深度可分卷积代替二维卷积，模型产数量可能会大大降低。因此，模型可能会变得不够理想。不过，如果使用得当，深度可分卷积可以提高效率，而不会对模型性能造成重大损害。
 
-## 扁平化卷积
+## 9 扁平化卷积
 
 扁平化卷积是在 [[1412.5474] Flattened Convolutional Neural Networks for Feedforward Acceleration](https://arxiv.org/abs/1412.5474) 一文中提出的。直观地说，其原理是应用滤波器分离。我们不再使用一个标准卷积滤波器将输入层映射到输出层，而是将这个标准滤波器分离成 3 个一维滤波器。这种想法与上文所述的空间可分离卷积类似，即一个空间滤波器由两个 1 级滤波器近似。
 
@@ -316,7 +316,7 @@ $$
 
 为了缓解这一问题，论文限制了感受野中的连接，使模型在训练时可以学习一维分离滤波器。论文称，通过使用扁平化网络（由三维空间所有方向上的连续一维滤波器序列组成）进行训练，可以获得与标准卷积网络相当的性能，而且由于学习参数的大幅减少，计算成本也大大降低。
 
-## 分组卷积
+## 10 分组卷积
 
 分组卷积是在 2012 年的 [AlexNet](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf) 中提出的。实现它的主要原因是为了在内存有限（每个 GPU 1.5 GB 内存）的情况下，通过两个 GPU 进行网络训练。下面的 AlexNet 在大部分层显示了两条独立的卷积路径。这是在两个 GPU 上进行模型并行化（当然，如果有更多 GPU 可用，也可以进行多 GPU 并行化）。
 
@@ -332,7 +332,7 @@ $$
 
 上图是使用 2 个滤波器组进行分组卷积的示意图。在每个滤波器组中，每个滤波器的深度仅为标准二维卷积深度的一半。每个滤波器组包含 Dout /2 个滤波器。第一个滤波器组（红色）与输入层的前半部分（[:, :, 0:Din/2]）卷积，而第二个滤波器组（蓝色）与输入层的后半部分（[:, :, Din/2:Din]）卷积。因此，每个滤波器组都会产生 Dout/2 个通道。总的来说，两个滤波器组会产生 2 x Dout/2 = Dout 个通道。然后，我们将这些通道与 Dout 通道一起堆叠到输出层。
 
-### 分组卷积与深度卷积
+### 10.1 分组卷积与深度卷积
 
 你可能已经注意到分组卷积和深度可分离卷积中使用的深度卷积之间的联系和区别。如果滤波器组数与输入层通道数相同，则每个滤波器的深度为 Din / Din = 1。这与深度卷积的滤波器深度相同。
 
@@ -364,7 +364,7 @@ $$
 
 此外，每个滤波器组都能学习到独特的数据表示。AlexNet 的作者注意到，滤波器组似乎将学习到的滤波器分为两个不同的组，即黑白滤波器和彩色滤波器。
 
-## 洗牌分组卷积
+## 11 洗牌分组卷积
 
 Magvii 公司（Face++）的 [[1707.01083] ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices]( https://arxiv.org/abs/1707.01083 ) 是一种计算效率高的卷积架构，专为计算能力非常有限（如 10-150 MFLOPs）的移动设备而设计。
 
@@ -384,10 +384,39 @@ Magvii 公司（Face++）的 [[1707.01083] ShuffleNet: An Extremely Efficient Co
 
 洗牌后，我们像往常一样继续执行第二次分组卷积 GConv2。但现在，由于洗牌层中的信息已经混合，我们基本上将 GConv2 中的每个组与特征图层（或输入层）中的不同子组进行馈送。因此，我们允许信息在通道组之间流动，并加强了表征。
 
-## 逐点分组卷积
+## 12 逐点分组卷积
 
 ShuffleNet 论文（链接）还引入了点分组卷积。通常情况下，分组卷积（如 MobileNet（链接）或 ResNeXt（链接）中的分组卷积）是对 3x3 空间卷积进行分组操作，而不是对 1 x 1 卷积进行分组操作。
 
 ShuffleNet 论文认为，1 x 1 卷积的计算成本也很高。论文建议将分组卷积也应用于 1 x 1 卷积。点分组卷积，顾名思义，就是对 1 x 1 卷积进行分组操作。其操作与分组卷积完全相同，只有一处修改 -- 在 1x1 滤波器上执行，而不是 NxN 滤波器（N>1）。
 
 在 ShuffleNet 论文中，作者利用了我们所学到的三种卷积：(1) Shuffled 分组卷积；(2) pointwise 分组卷积；(3) depthwise 可分离卷积。这种架构设计在保持准确性的同时，大大降低了计算成本。例如，在实际移动设备上，ShuffleNet 和 AlexNet 的分类误差相当。然而，计算成本却从 AlexNet 的 720 MFLOPs 大幅降低到 ShuffleNet 的 40-140 MFLOPs。凭借相对较小的计算成本和良好的模型性能，ShuffleNet 在面向移动设备的卷积神经网络领域获得了青睐。
+
+## 13 参考
+
+### 13.1 博客和文章
+
+- “An Introduction to different Types of Convolutions in Deep Learning” ([Link](https://towardsdatascience.com/types-of-convolutions-in-deep-learning-717013397f4d))
+- “Review: DilatedNet — Dilated Convolution (Semantic Segmentation)” ([Link](https://towardsdatascience.com/review-dilated-convolution-semantic-segmentation-9d5a5bd768f5))
+- “ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices” ([Link](https://medium.com/syncedreview/shufflenet-an-extremely-efficient-convolutional-neural-network-for-mobile-devices-72c6f5b01651))
+- “Separable convolutions “A Basic Introduction to Separable Convolutions” ([Link](https://towardsdatascience.com/a-basic-introduction-to-separable-convolutions-b99ec3102728))
+- Inception network “A Simple Guide to the Versions of the Inception Network” ([Link](https://towardsdatascience.com/a-simple-guide-to-the-versions-of-the-inception-network-7fc52b863202))
+- “A Tutorial on Filter Groups (Grouped Convolution)” ([Link](https://blog.yani.io/filter-group-tutorial/))
+- “Convolution arithmetic animation” ([Link](https://github.com/vdumoulin/conv_arithmetic))
+- “Up-sampling with Transposed Convolution” ([Link](https://towardsdatascience.com/up-sampling-with-transposed-convolution-9ae4f2df52d0))
+- “Intuitively Understanding Convolutions for Deep Learning” ([Link](https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1))
+
+### 13.2 论文
+
+- Network in Network ([Link](https://arxiv.org/abs/1312.4400))
+- Multi-Scale Context Aggregation by Dilated Convolutions ([Link](https://arxiv.org/abs/1511.07122))
+- Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs ([Link](https://arxiv.org/abs/1412.7062))
+- ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices ([Link](https://arxiv.org/abs/1707.01083))
+- A guide to convolution arithmetic for deep learning ([Link](https://arxiv.org/abs/1603.07285))
+- Going deeper with convolutions ([Link](https://arxiv.org/abs/1409.4842))
+- Rethinking the Inception Architecture for Computer Vision ([Link](https://arxiv.org/pdf/1512.00567v3.pdf))
+- Flattened convolutional neural networks for feedforward acceleration ([Link](https://arxiv.org/abs/1412.5474))
+- Xception: Deep Learning with Depthwise Separable Convolutions ([Link](https://arxiv.org/abs/1610.02357))
+- MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications ([Link](https://arxiv.org/abs/1704.04861))
+- Deconvolution and Checkerboard Artifacts ([Link](https://distill.pub/2016/deconv-checkerboard/))
+- ResNeXt: Aggregated Residual Transformations for Deep Neural Networks ([Link](https://arxiv.org/abs/1611.05431))
